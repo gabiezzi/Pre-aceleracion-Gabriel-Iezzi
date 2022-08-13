@@ -1,5 +1,6 @@
 package com.alkemy.disney.entity;
 
+import com.alkemy.disney.dto.MovieDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +38,10 @@ public class CharacterEntity {
 
     private Boolean deleted = Boolean.FALSE;
 
-    @ManyToMany(mappedBy = "characters", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "cast", cascade = CascadeType.ALL)
     private List<MovieEntity> movies = new ArrayList<>() ;;
+
+    public void addMovie(MovieEntity movie){this.movies.add(movie);}
+    public void removeMovie(MovieEntity movie){this.movies.remove(movie);}
 
 }

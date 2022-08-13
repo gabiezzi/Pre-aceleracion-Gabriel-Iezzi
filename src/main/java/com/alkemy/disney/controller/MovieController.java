@@ -1,7 +1,10 @@
 package com.alkemy.disney.controller;
 
+import com.alkemy.disney.dto.CharacterDTO;
+import com.alkemy.disney.dto.MovieBasicDTO;
 import com.alkemy.disney.dto.MovieDTO;
 import com.alkemy.disney.entity.MovieEntity;
+import com.alkemy.disney.service.impl.CharacterServiceImpl;
 import com.alkemy.disney.service.impl.MovieServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,12 +20,15 @@ public class MovieController {
     @Autowired
     private MovieServiceImpl movieService;
 
+    @Autowired
+    private CharacterServiceImpl characterService;
+
     @GetMapping("/list")
-    public ResponseEntity<List<MovieDTO>> listMovies() throws Exception {
+    public ResponseEntity<List<MovieBasicDTO>> listMovies() throws Exception {
 
-        List<MovieDTO> movieDTOS = movieService.findAll();
+        List<MovieBasicDTO> movieBasicDTOS = movieService.findAll();
 
-        return ResponseEntity.ok().body(movieDTOS);
+        return ResponseEntity.ok().body(movieBasicDTOS);
 
     }
 

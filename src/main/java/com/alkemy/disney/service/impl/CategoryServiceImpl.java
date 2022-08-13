@@ -2,9 +2,10 @@ package com.alkemy.disney.service.impl;
 
 import com.alkemy.disney.dto.CategoryDTO;
 import com.alkemy.disney.entity.CategoryEntity;
+import com.alkemy.disney.mapper.CategoryMapper;
 import com.alkemy.disney.repository.CategoryRepository;
 import com.alkemy.disney.service.BaseService;
-import org.modelmapper.ModelMapper;
+import com.alkemy.disney.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,23 +16,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoryServiceImpl implements BaseService<CategoryDTO> {
+public class CategoryServiceImpl implements CategoryService, BaseService<CategoryDTO> {
 
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private CategoryMapper categoryMapper;
+
+
 
     @Override
     @Transactional
     public List<CategoryDTO> findAll() throws Exception {
         try {
             List<CategoryEntity> entities = categoryRepository.findAll();
-            List<CategoryDTO> dtos = entities.stream().map(entity -> modelMapper.map(entity, CategoryDTO.class)).collect(Collectors.toList());
 
-            return dtos;
+            //List<CategoryDTO> dtos = entities.stream().map(entity -> modelMapper.map(entity, CategoryDTO.class)).collect(Collectors.toList());
+
+            return categoryMapper.categoryEntity2DTOList(entities);
         } catch (Exception e) {
 
             throw new Exception("Category not found ");
@@ -43,19 +47,26 @@ public class CategoryServiceImpl implements BaseService<CategoryDTO> {
     }
 
     @Override
+    public CategoryEntity findCategoryById(Long id) throws Exception {
+        Optional<CategoryEntity> optional = categoryRepository.findById(id);
+
+        if (optional.isEmpty()) {
+
+            throw new Exception("Param not found : Category Id");
+
+        }
+        return optional.get();
+
+
+    }
+
+
     @Transactional
     public CategoryDTO findById(Long id) throws Exception {
 
-        Optional<CategoryEntity> optionalEntity = categoryRepository.findById(id);
+        CategoryEntity categoryEntity = findCategoryById(id);
 
-        if (optionalEntity.isPresent()){
-
-            return modelMapper.map(optionalEntity,CategoryDTO.class);
-
-        } else {
-
-            throw new Exception("Category not found");
-        }
+       return categoryMapper.categoryEntity2DTO(categoryEntity);
 
     }
 
@@ -64,9 +75,11 @@ public class CategoryServiceImpl implements BaseService<CategoryDTO> {
     public CategoryDTO save(CategoryDTO dto) throws Exception {
 
         try{
-            CategoryEntity categoryEntity = modelMapper.map(dto, CategoryEntity.class);
-            CategoryEntity categorySaved = categoryRepository.save(categoryEntity);
-            return modelMapper.map(categorySaved,CategoryDTO.class);
+
+            CategoryEntity categoryEntity = categoryMapper.categoryDTO2Entity(dto);
+
+            return categoryMapper.categoryEntity2DTO(categoryRepository.save(categoryEntity));
+
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }

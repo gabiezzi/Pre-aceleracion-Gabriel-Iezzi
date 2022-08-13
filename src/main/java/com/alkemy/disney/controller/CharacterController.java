@@ -1,5 +1,6 @@
 package com.alkemy.disney.controller;
 
+import com.alkemy.disney.dto.CharacterBasicDTO;
 import com.alkemy.disney.dto.CharacterDTO;
 import com.alkemy.disney.service.impl.CharacterServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class CharacterController {
     private CharacterServiceImpl characterService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<CharacterDTO>> listCharacters() throws Exception{
-        List<CharacterDTO> characterDTOS = characterService.findAll();
+    public ResponseEntity<List<CharacterBasicDTO>> getAll() throws Exception{
+        List<CharacterBasicDTO> characterDTOS = characterService.findAll();
         return ResponseEntity.ok().body(characterDTOS);
     }
 
@@ -28,6 +29,15 @@ public class CharacterController {
         CharacterDTO characterSaved = characterService.save(characterDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(characterSaved);
+
+    }
+
+    @PutMapping
+    public ResponseEntity<CharacterDTO> update(@RequestBody CharacterDTO characterDTO) throws Exception {
+
+        CharacterDTO result = characterService.update(characterDTO);
+        return ResponseEntity.ok().body(result);
+
 
     }
 
