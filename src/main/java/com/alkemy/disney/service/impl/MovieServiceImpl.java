@@ -4,12 +4,14 @@ package com.alkemy.disney.service.impl;
 import com.alkemy.disney.dto.CharacterDTO;
 import com.alkemy.disney.dto.MovieBasicDTO;
 import com.alkemy.disney.dto.MovieDTO;
+import com.alkemy.disney.dto.MoviesFiltersDTO;
 import com.alkemy.disney.entity.CharacterEntity;
 import com.alkemy.disney.entity.MovieEntity;
 import com.alkemy.disney.mapper.MovieMapper;
 import com.alkemy.disney.repository.CharacterRepository;
 import com.alkemy.disney.repository.MovieRepository;
 
+import com.alkemy.disney.repository.specification.MovieSpecification;
 import com.alkemy.disney.service.BaseService;
 import com.alkemy.disney.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,21 @@ import java.util.Optional;
 @Service
 public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
-    @Autowired
     private MovieRepository movieRepository;
 
-    @Autowired
-    MovieMapper movieMapper;
+    private MovieMapper movieMapper;
+
+    private CharacterServiceImpl characterService;
+
+    private MovieSpecification movieSpecification;
 
     @Autowired
-    CharacterServiceImpl characterService;
-
+    public MovieServiceImpl(MovieRepository movieRepository, MovieMapper movieMapper, CharacterServiceImpl characterService, MovieSpecification movieSpecification) {
+        this.movieRepository = movieRepository;
+        this.movieMapper = movieMapper;
+        this.characterService = characterService;
+        this.movieSpecification = movieSpecification;
+    }
 
     @Override
     @Transactional
@@ -56,7 +64,7 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
         movieEntity.addCharacter(characterService.findCharacterById(idCharacter));
 
-        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity),true);
+        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity), true);
 
 
     }
@@ -68,7 +76,7 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
         movieEntity.removeCharacter(characterService.findCharacterById(idCharacter));
 
-        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity),true);
+        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity), true);
 
     }
 
@@ -94,6 +102,17 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
         }
         return optional.get();
+
+    }
+
+    @Override
+    public List<MovieDTO> getMoviesByFilters(String name, String date, List<Long> categories, String order) {
+
+        MoviesFiltersDTO movieFiltersDTO = new MoviesFiltersDTO(name, date, categories, order);
+
+        List<MovieEntity> movieEntities = this.movieRepository.findAll(this.movieSpecification.getMoviesByFilters(movieFiltersDTO));
+
+        return movieMapper.movieEntities2DTOList(movieEntities, true);
 
     }
 

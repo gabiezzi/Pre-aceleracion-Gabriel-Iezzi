@@ -16,4 +16,5 @@ public interface MovieService {
 
     public MovieEntity findMovieById(Long id) throws Exception ;
 
+    List<MovieDTO> getMoviesByFilters(String name, String date, List<Long> categories, String order);
 }

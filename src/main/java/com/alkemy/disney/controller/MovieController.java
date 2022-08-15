@@ -32,6 +32,19 @@ public class MovieController {
 
     }
 
+    @GetMapping
+    public ResponseEntity<List<MovieDTO>> getMoviesByFilters(
+            @RequestParam(required=false) String name,
+            @RequestParam(required=false) String date,
+            @RequestParam(required=false) List<Long> categories,
+            @RequestParam(required=false , defaultValue = "ASC") String order
+    ){
+        List<MovieDTO> movieDTOS = this.movieService.getMoviesByFilters(name, date, categories, order);
+
+        return ResponseEntity.ok(movieDTOS);
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<MovieDTO> buscarPorId(@PathVariable("id") Long id) throws Exception {
         MovieDTO result = movieService.findById(id);
