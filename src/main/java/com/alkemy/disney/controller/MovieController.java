@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("movies")
+@RequestMapping("/movies")
 public class MovieController {
 
     @Autowired
@@ -34,12 +34,12 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<List<MovieDTO>> getMoviesByFilters(
-            @RequestParam(required=false) String name,
+            @RequestParam(required=false) String title,
             @RequestParam(required=false) String date,
-            @RequestParam(required=false) List<Long> categories,
+            @RequestParam(required=false) List<Long> category,
             @RequestParam(required=false , defaultValue = "ASC") String order
     ){
-        List<MovieDTO> movieDTOS = this.movieService.getMoviesByFilters(name, date, categories, order);
+        List<MovieDTO> movieDTOS = this.movieService.getMoviesByFilters(title, date, category, order);
 
         return ResponseEntity.ok(movieDTOS);
 
@@ -60,10 +60,10 @@ public class MovieController {
 
     }
 
-    @PutMapping
-    public ResponseEntity<MovieDTO> update(@RequestBody MovieDTO movieDTO) throws Exception {
+    @PutMapping("/{id}")
+    public ResponseEntity<MovieDTO> update(@RequestBody MovieDTO movieDTO, @PathVariable Long id) throws Exception {
 
-        MovieDTO result = movieService.update(movieDTO);
+        MovieDTO result = movieService.update(movieDTO, id);
         return ResponseEntity.ok().body(result);
 
 

@@ -7,19 +7,18 @@ import java.util.List;
 
 @Setter
 @Getter
-public class MoviesFiltersDTO {
+public class CharactersFiltersDTO {
 
-    private String title;
-    private String date;
-    private List<Long> category;
+    private String name;
+    private Integer age;
+    private List<Long> movies;
     private String order;
 
-    public MoviesFiltersDTO(String title, String date, List<Long> category, String order) {
-        this.title = title;
-        this.date = date;
-        this.category = category;
+    public CharactersFiltersDTO(String name, Integer age, List<Long> movies, String order) {
+        this.name = name;
+        this.age = age;
+        this.movies = movies;
         this.order = order;
-
     }
 
     public boolean isASC() {
@@ -29,5 +28,4 @@ public class MoviesFiltersDTO {
     public boolean isDESC() {
         return this.order.compareToIgnoreCase("DESC") == 0;
     }
-
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 @Table(name = "characters")
 @SQLDelete(sql = "UPDATE characters SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
-public class CharacterEntity {
+public class CharacterEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

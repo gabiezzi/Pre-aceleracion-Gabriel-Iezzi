@@ -7,6 +7,7 @@ import com.alkemy.disney.dto.MovieDTO;
 import com.alkemy.disney.dto.MoviesFiltersDTO;
 import com.alkemy.disney.entity.CharacterEntity;
 import com.alkemy.disney.entity.MovieEntity;
+import com.alkemy.disney.exception.ParamNotFound;
 import com.alkemy.disney.mapper.MovieMapper;
 import com.alkemy.disney.repository.CharacterRepository;
 import com.alkemy.disney.repository.MovieRepository;
@@ -96,9 +97,7 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
         if (optional.isEmpty()) {
 
-            throw new Exception("Movie not found");
-
-            //TODO: throw new ParamNotFound("Movie id is not valid");
+            throw new ParamNotFound("Movie id is not valid");
 
         }
         return optional.get();
@@ -106,9 +105,14 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
     }
 
     @Override
-    public List<MovieDTO> getMoviesByFilters(String name, String date, List<Long> categories, String order) {
+    public List<MovieDTO> getMoviesByFilters
+            (
+             String title,
+             String date,
+             List<Long> category,
+             String order) {
 
-        MoviesFiltersDTO movieFiltersDTO = new MoviesFiltersDTO(name, date, categories, order);
+        MoviesFiltersDTO movieFiltersDTO = new MoviesFiltersDTO(title, date, category, order);
 
         List<MovieEntity> movieEntities = this.movieRepository.findAll(this.movieSpecification.getMoviesByFilters(movieFiltersDTO));
 
@@ -121,6 +125,8 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
     public MovieDTO save(MovieDTO dto) throws Exception {
 
         try {
+
+            //TODO: arreglar el false del save;
 
             MovieEntity entity = movieMapper.movieDTO2Entity(dto, true);
             //MovieEntity entity = modelMapper.map(dto, MovieEntity.class);
@@ -138,9 +144,9 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
     @Override
     @Transactional
-    public MovieDTO update(MovieDTO dto) throws Exception {
+    public MovieDTO update(MovieDTO dto, Long idMovie) throws Exception {
 
-        Optional<MovieEntity> entityOptional = movieRepository.findById(dto.getId());
+        Optional<MovieEntity> entityOptional = movieRepository.findById(idMovie);
 
         if (entityOptional.isPresent()) {
 

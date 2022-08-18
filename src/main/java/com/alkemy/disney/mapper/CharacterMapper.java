@@ -19,7 +19,9 @@ public class CharacterMapper {
 
     public CharacterDTO characterEntity2DTO(CharacterEntity characterEntity, boolean loadMovies) {
 
+
         CharacterDTO characterDTO = new CharacterDTO();
+        characterDTO.setId(characterEntity.getId());
         characterDTO.setImage(characterEntity.getImage());
         characterDTO.setName(characterEntity.getName());
         characterDTO.setAge(characterEntity.getAge());
@@ -38,6 +40,10 @@ public class CharacterMapper {
     public CharacterEntity characterDTO2Entity(CharacterDTO characterDTO, boolean loadMovies) {
 
         CharacterEntity characterEntity = new CharacterEntity();
+        if (characterDTO.getId()!=null){
+            characterEntity.setId(characterDTO.getId());
+        }
+
         characterEntity.setName(characterDTO.getName());
         characterEntity.setImage(characterDTO.getImage());
         characterEntity.setAge(characterDTO.getAge());
@@ -116,8 +122,8 @@ public class CharacterMapper {
         CharacterBasicDTO characterBasicDTO = new CharacterBasicDTO();
 
         characterBasicDTO.setId(characterEntity.getId());
-        characterBasicDTO.setName(characterBasicDTO.getName());
-        characterBasicDTO.setImage(characterBasicDTO.getImage());
+        characterBasicDTO.setName(characterEntity.getName());
+        characterBasicDTO.setImage(characterEntity.getImage());
 
 
         return characterBasicDTO;

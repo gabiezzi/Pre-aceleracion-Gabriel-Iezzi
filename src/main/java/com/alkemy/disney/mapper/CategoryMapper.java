@@ -12,6 +12,8 @@ public class CategoryMapper {
 
     public CategoryEntity categoryDTO2Entity(CategoryDTO categoryDTO) {
 
+        System.out.println(categoryDTO);
+
         CategoryEntity categoryEntity = new CategoryEntity();
 
         if (categoryDTO.getId() != null) {
@@ -23,6 +25,8 @@ public class CategoryMapper {
         categoryEntity.setName(categoryDTO.getName());
         categoryEntity.setImage(categoryDTO.getImage());
 
+        System.out.println(categoryEntity);
+
         return categoryEntity;
 
     }
@@ -33,7 +37,7 @@ public class CategoryMapper {
 
         categoryDTO.setId(categoryEntity.getId());
         categoryDTO.setImage(categoryEntity.getImage());
-        categoryDTO.setName(categoryDTO.getName());
+        categoryDTO.setName(categoryEntity.getName());
 
         return categoryDTO;
 
@@ -55,18 +59,18 @@ public class CategoryMapper {
 
     }
 
-    public List<CategoryDTO> categoryEntity2DTOList(List<CategoryEntity> categoryEntities){
+    public List<CategoryDTO> categoryEntity2DTOList(List<CategoryEntity> categoryEntities) {
 
         List<CategoryDTO> categoryDTOS = new ArrayList<>();
 
-        for (CategoryEntity entity: categoryEntities
-             ) {
+        for (CategoryEntity entity : categoryEntities
+        ) {
 
             categoryDTOS.add(categoryEntity2DTO(entity));
 
         }
 
-        return  categoryDTOS;
+        return categoryDTOS;
 
     }
 

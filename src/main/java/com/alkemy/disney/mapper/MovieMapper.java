@@ -23,6 +23,7 @@ public class MovieMapper {
         if (movieDTO.getId() != null) {
             movieEntity.setId(movieDTO.getId());
         }
+        movieEntity.setTitle(movieDTO.getTitle());
         movieEntity.setImage(movieDTO.getImage());
         movieEntity.setCreationDate(movieDTO.getCreationDate());
         movieEntity.setCategoryId(movieDTO.getCategoryId());
@@ -38,7 +39,9 @@ public class MovieMapper {
     }
 
     public MovieDTO movieEntity2DTO(MovieEntity movieEntity, boolean loadCharacters) {
+
         MovieDTO movieDTO = new MovieDTO();
+
         movieDTO.setId(movieEntity.getId());
         movieDTO.setImage(movieEntity.getImage());
         movieDTO.setTitle(movieEntity.getTitle());

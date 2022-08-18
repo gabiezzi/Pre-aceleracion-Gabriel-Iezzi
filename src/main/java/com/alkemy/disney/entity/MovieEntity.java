@@ -9,6 +9,7 @@ import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 @Table(name = "movies")
 @SQLDelete(sql = "UPDATE movies SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
-public class MovieEntity {
+public class MovieEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -11,20 +11,23 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class CategoryServiceImpl implements CategoryService, BaseService<CategoryDTO> {
 
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository  categoryRepository;
+
+    private final CategoryMapper categoryMapper;
+
 
     @Autowired
-    private CategoryMapper categoryMapper;
-
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
+        this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
+    }
 
 
     @Override
@@ -38,10 +41,9 @@ public class CategoryServiceImpl implements CategoryService, BaseService<Categor
             return categoryMapper.categoryEntity2DTOList(entities);
         } catch (Exception e) {
 
-            throw new Exception("Category not found ");
+            throw new Exception("Category not found");
 
         }
-
 
 
     }
@@ -66,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService, BaseService<Categor
 
         CategoryEntity categoryEntity = findCategoryById(id);
 
-       return categoryMapper.categoryEntity2DTO(categoryEntity);
+        return categoryMapper.categoryEntity2DTO(categoryEntity);
 
     }
 
@@ -74,13 +76,15 @@ public class CategoryServiceImpl implements CategoryService, BaseService<Categor
     @Transactional
     public CategoryDTO save(CategoryDTO dto) throws Exception {
 
-        try{
+        try {
 
             CategoryEntity categoryEntity = categoryMapper.categoryDTO2Entity(dto);
 
-            return categoryMapper.categoryEntity2DTO(categoryRepository.save(categoryEntity));
+            CategoryEntity categorySaved = categoryRepository.save(categoryEntity);
 
-        } catch (Exception e){
+            return categoryMapper.categoryEntity2DTO(categorySaved);
+
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
 
@@ -88,13 +92,16 @@ public class CategoryServiceImpl implements CategoryService, BaseService<Categor
 
     @Override
     @Transactional
-    public CategoryDTO update(CategoryDTO dto) throws Exception {
+    public CategoryDTO update(CategoryDTO dto, Long id) throws Exception {
 
         Optional<CategoryEntity> entityOptional = categoryRepository.findById(dto.getId());
 
         if (entityOptional.isPresent()) {
 
-            return save(dto);
+            CategoryEntity categoryEntity = categoryMapper.categoryDTO2Entity(dto);
+            CategoryEntity categorySaved = categoryRepository.save(categoryEntity);
+
+            return categoryMapper.categoryEntity2DTO(categorySaved);
 
         } else {
             throw new Exception("Category not found");
@@ -105,7 +112,7 @@ public class CategoryServiceImpl implements CategoryService, BaseService<Categor
 
     @Override
     @Transactional
-    public void delete(Long id) throws Exception {
+    public void delete(Long id)  {
 
         categoryRepository.deleteById(id);
 

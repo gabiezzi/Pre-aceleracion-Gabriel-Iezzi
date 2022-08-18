@@ -18,9 +18,23 @@ public class CharacterController {
     private CharacterServiceImpl characterService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<CharacterBasicDTO>> getAll() throws Exception{
-        List<CharacterBasicDTO> characterDTOS = characterService.findAll();
+    public ResponseEntity<List<CharacterBasicDTO>> getAll() throws Exception {
+        List<CharacterBasicDTO> characterDTOS = this.characterService.findAll();
         return ResponseEntity.ok().body(characterDTOS);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CharacterDTO>> getCharactersByFilter(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) List<Long> movies,
+            @RequestParam(required = false, defaultValue = "ASC") String order
+    ) {
+
+        List<CharacterDTO> characterDTOS = this.characterService.getCharactersByFilters(name, age, movies, order);
+
+        return ResponseEntity.ok(characterDTOS);
+
     }
 
     @PostMapping
@@ -33,16 +47,16 @@ public class CharacterController {
     }
 
     @PutMapping
-    public ResponseEntity<CharacterDTO> update(@RequestBody CharacterDTO characterDTO) throws Exception {
+    public ResponseEntity<CharacterDTO> update(@RequestBody CharacterDTO characterDTO, Long id) throws Exception {
 
-        CharacterDTO result = characterService.update(characterDTO);
+        CharacterDTO result = characterService.update(characterDTO, id);
         return ResponseEntity.ok().body(result);
 
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete (@PathVariable Long id) throws Exception{
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws Exception {
 
         characterService.delete(id);
 
