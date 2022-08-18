@@ -25,12 +25,24 @@ public class CategoryController {
 
     }
 
+
+
     @PostMapping
     public ResponseEntity<CategoryDTO> save(@RequestBody CategoryDTO categoryDTO) throws Exception {
 
         CategoryDTO categorySaved = categoryService.save(categoryDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(categorySaved);
+
+
+    }
+
+    @PutMapping
+    public ResponseEntity<CategoryDTO> update(@RequestBody CategoryDTO categoryDTO, Long id) throws Exception {
+
+        CategoryDTO result = categoryService.update(categoryDTO, id);
+
+        return ResponseEntity.ok().body(result);
 
 
     }

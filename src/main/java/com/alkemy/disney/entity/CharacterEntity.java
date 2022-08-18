@@ -1,5 +1,6 @@
 package com.alkemy.disney.entity;
 
+import com.alkemy.disney.dto.MovieDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
 @Table(name = "characters")
 @SQLDelete(sql = "UPDATE characters SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
-public class CharacterEntity {
+public class CharacterEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -37,7 +39,10 @@ public class CharacterEntity {
 
     private Boolean deleted = Boolean.FALSE;
 
-    @ManyToMany(mappedBy = "characters", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "cast", cascade = CascadeType.ALL)
     private List<MovieEntity> movies = new ArrayList<>() ;;
+
+    public void addMovie(MovieEntity movie){this.movies.add(movie);}
+    public void removeMovie(MovieEntity movie){this.movies.remove(movie);}
 
 }

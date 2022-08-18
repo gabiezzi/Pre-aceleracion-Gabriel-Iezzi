@@ -1,37 +1,59 @@
 package com.alkemy.disney.service.impl;
 
+import com.alkemy.disney.dto.CharacterBasicDTO;
 import com.alkemy.disney.dto.CharacterDTO;
+import com.alkemy.disney.dto.CharactersFiltersDTO;
 import com.alkemy.disney.entity.CharacterEntity;
 import com.alkemy.disney.entity.MovieEntity;
+import com.alkemy.disney.mapper.CharacterMapper;
 import com.alkemy.disney.repository.CharacterRepository;
+import com.alkemy.disney.repository.specification.CharacterSpecification;
 import com.alkemy.disney.service.BaseService;
-import org.modelmapper.ModelMapper;
+import com.alkemy.disney.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
-public class CharacterServiceImpl implements BaseService<CharacterDTO> {
+public class CharacterServiceImpl implements CharacterService, BaseService<CharacterDTO> {
 
 
-    @Autowired
     private CharacterRepository characterRepository;
 
+    private CharacterMapper characterMapper;
+
+    private CharacterSpecification characterSpecification;
+
+
     @Autowired
-    private ModelMapper modelMapper;
+    public CharacterServiceImpl(
+            CharacterRepository characterRepository,
+            CharacterMapper characterMapper,
+            CharacterSpecification characterSpecification
+    ) {
+        this.characterRepository = characterRepository;
+        this.characterMapper = characterMapper;
+        this.characterSpecification = characterSpecification;
+    }
+
 
     @Override
     @Transactional
-    public List<CharacterDTO> findAll() throws Exception {
+    public List<CharacterBasicDTO> findAll() throws Exception {
         try {
 
             List<CharacterEntity> movieEntities = characterRepository.findAll();
-            List<CharacterDTO> dtos = movieEntities.stream().map(characterEntity -> modelMapper.map(characterEntity, CharacterDTO.class)).collect(Collectors.toList());
 
-            return dtos;
+            List<CharacterBasicDTO> basicDTOS = characterMapper.characterEntity2BasicDTOList(movieEntities);
+
+            //List<CharacterDTO> dtos = movieEntities.stream().map(characterEntity -> modelMapper.map(characterEntity, CharacterDTO.class)).collect(Collectors.toList());
+
+            return basicDTOS;
         } catch (Exception e) {
 
             throw new Exception(e.getMessage());
@@ -41,27 +63,54 @@ public class CharacterServiceImpl implements BaseService<CharacterDTO> {
     @Override
     @Transactional
     public CharacterDTO findById(Long id) throws Exception {
-        Optional<CharacterEntity> optional = characterRepository.findById(id);
-        if (optional.isPresent()){
-            return modelMapper.map(optional,CharacterDTO.class);
-        } else {
-            throw new Exception("No characters were found with that id");
-        }
+
+        CharacterEntity characterEntity = findCharacterById(id);
+
+        return characterMapper.characterEntity2DTO(characterEntity, true);
     }
+    @Override
+    public CharacterEntity findCharacterById(Long id) throws Exception {
+        Optional<CharacterEntity> optional = characterRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new Exception("Param not found : Character id");
+        }
+
+        return optional.get();
+
+    }
+
+    @Override
+    public List<CharacterDTO> getCharactersByFilters(
+            String name,
+            Integer age,
+            List<Long> movies,
+            String order
+    ) {
+        CharactersFiltersDTO charactersFiltersDTO = new CharactersFiltersDTO(name, age, movies, order);
+
+        List<CharacterEntity> characterEntities = this.characterRepository.findALL(this.characterSpecification.getCharactersByFilters(charactersFiltersDTO));
+
+        return characterMapper.characterEntity2DTOList(characterEntities, true);
+    }
+
+
 
     @Override
     @Transactional
     public CharacterDTO save(CharacterDTO dto) throws Exception {
 
+        //TODO: arreglar el false del save;
+
         try {
-            CharacterEntity characterEntity = modelMapper.map(dto, CharacterEntity.class);
+            CharacterEntity characterEntity = characterMapper.characterDTO2Entity(dto, false);
 
             CharacterEntity entitySaved = characterRepository.save(characterEntity);
 
-            return modelMapper.map(entitySaved,CharacterDTO.class);
+            return characterMapper.characterEntity2DTO(entitySaved, false);
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new Exception("Character not found");
         }
 
@@ -69,13 +118,18 @@ public class CharacterServiceImpl implements BaseService<CharacterDTO> {
 
     @Override
     @Transactional
-    public CharacterDTO update(CharacterDTO dto) throws Exception {
+    public CharacterDTO update(CharacterDTO dto, Long id) throws Exception {
 
 
         Optional<CharacterEntity> entityOptional = characterRepository.findById(dto.getId());
 
-        if (entityOptional.isPresent()){
-            return save(dto);
+        if (entityOptional.isPresent()) {
+
+            CharacterEntity characterEntity = characterMapper.characterDTO2Entity(dto, false);
+            CharacterEntity entitySaved = characterRepository.save(characterEntity);
+            return characterMapper.characterEntity2DTO(entitySaved, false);
+
+
         } else {
 
             throw new Exception("Character not found");

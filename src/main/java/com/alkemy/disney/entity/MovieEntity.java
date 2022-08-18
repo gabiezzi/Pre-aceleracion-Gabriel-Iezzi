@@ -9,6 +9,7 @@ import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 @Table(name = "movies")
 @SQLDelete(sql = "UPDATE movies SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
-public class MovieEntity {
+public class MovieEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -40,21 +41,33 @@ public class MovieEntity {
     private Boolean deleted = Boolean.FALSE;
 
     @ManyToOne
-    @JoinColumn(name = "category_id",  insertable = false , updatable = false)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private CategoryEntity category;
 
-    @Column(name = "category_id")
-    private Long categoryId; // , nullable = false
+    @Column(name = "category_id", nullable = false)
+    private Long categoryId;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(
-            name = "movies_character",
+            name = "movies_characters",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "character_id"))
-    private List<CharacterEntity> characters  = new ArrayList<>() ; ;
+    private List<CharacterEntity> cast = new ArrayList<>();
+    ;
+
+
+    public void addCharacter(CharacterEntity character) {
+        this.cast.add(character);
+        character.getMovies().add(this);
+    }
+
+    public void removeCharacter(CharacterEntity character) {
+        this.cast.remove(character);
+        character.getMovies().add(this);
+    }
 
 
 }
