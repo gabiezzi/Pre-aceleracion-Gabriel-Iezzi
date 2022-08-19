@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 public class CharacterServiceImpl implements CharacterService, BaseService<CharacterDTO> {
 
 
-    private CharacterRepository characterRepository;
+    CharacterRepository characterRepository;
 
-    private CharacterMapper characterMapper;
+    CharacterMapper characterMapper;
 
-    private CharacterSpecification characterSpecification;
+    CharacterSpecification characterSpecification;
 
 
     @Autowired
@@ -89,7 +89,7 @@ public class CharacterServiceImpl implements CharacterService, BaseService<Chara
     ) {
         CharactersFiltersDTO charactersFiltersDTO = new CharactersFiltersDTO(name, age, movies, order);
 
-        List<CharacterEntity> characterEntities = this.characterRepository.findALL(this.characterSpecification.getCharactersByFilters(charactersFiltersDTO));
+        List<CharacterEntity> characterEntities = this.characterRepository.findAll(this.characterSpecification.getCharactersByFilters(charactersFiltersDTO));
 
         return characterMapper.characterEntity2DTOList(characterEntities, true);
     }
