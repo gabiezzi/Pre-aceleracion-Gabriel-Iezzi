@@ -17,6 +17,7 @@ public interface CharacterService {
     public List<CharacterDTO> getCharactersByFilters(
             String name,
             Integer age,
+            Double weight,
             List<Long> movies,
             String order
     );

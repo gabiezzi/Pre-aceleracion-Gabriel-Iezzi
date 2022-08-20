@@ -84,10 +84,11 @@ public class CharacterServiceImpl implements CharacterService, BaseService<Chara
     public List<CharacterDTO> getCharactersByFilters(
             String name,
             Integer age,
+            Double weight,
             List<Long> movies,
             String order
     ) {
-        CharactersFiltersDTO charactersFiltersDTO = new CharactersFiltersDTO(name, age, movies, order);
+        CharactersFiltersDTO charactersFiltersDTO = new CharactersFiltersDTO(name, age, weight, movies, order);
 
         List<CharacterEntity> characterEntities = this.characterRepository.findAll(this.characterSpecification.getCharactersByFilters(charactersFiltersDTO));
 
