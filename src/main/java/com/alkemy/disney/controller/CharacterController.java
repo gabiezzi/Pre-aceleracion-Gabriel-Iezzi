@@ -23,15 +23,24 @@ public class CharacterController {
         return ResponseEntity.ok().body(characterDTOS);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<CharacterDTO> getOne(@PathVariable Long id) throws Exception {
+        CharacterDTO characterDTO = this.characterService.findById(id);
+        return ResponseEntity.ok().body(characterDTO);
+    }
+
+
+
     @GetMapping
     public ResponseEntity<List<CharacterDTO>> getCharactersByFilter(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Double weight,
             @RequestParam(required = false) List<Long> movies,
             @RequestParam(required = false, defaultValue = "ASC") String order
     ) {
 
-        List<CharacterDTO> characterDTOS = this.characterService.getCharactersByFilters(name, age, movies, order);
+        List<CharacterDTO> characterDTOS = this.characterService.getCharactersByFilters(name, age, weight, movies, order);
 
         return ResponseEntity.ok(characterDTOS);
 

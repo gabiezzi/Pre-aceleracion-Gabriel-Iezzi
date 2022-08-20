@@ -34,14 +34,22 @@ public class CharacterSpecification {
                 );
             }
 
-            if (StringUtils.hasLength(charactersFiltersDTO.getAge().toString())) {
+            if (charactersFiltersDTO.getAge() != null) {
                 predicates.add(
-                        criteriaBuilder.like(
-                                criteriaBuilder.lower(root.get("age")), charactersFiltersDTO.getAge().toString()
-                        )
+                        criteriaBuilder.equal(root.get("age"), charactersFiltersDTO.getAge())
+
                 );
 
             }
+
+            if (charactersFiltersDTO.getWeight() != null) {
+                predicates.add(
+                        criteriaBuilder.equal(root.get("weight"), charactersFiltersDTO.getWeight())
+
+                );
+
+            }
+
             if (!CollectionUtils.isEmpty(charactersFiltersDTO.getMovies())) {
                 Join<MovieEntity, CharacterEntity> join = root.join("movies", JoinType.INNER);
                 Expression<String> movies = join.get("id");
