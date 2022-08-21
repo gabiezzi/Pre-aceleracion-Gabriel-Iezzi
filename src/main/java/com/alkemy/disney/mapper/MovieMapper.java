@@ -25,13 +25,17 @@ public class MovieMapper {
         }
         movieEntity.setTitle(movieDTO.getTitle());
         movieEntity.setImage(movieDTO.getImage());
+        movieEntity.setRating(movieDTO.getRaiting());
         movieEntity.setCreationDate(movieDTO.getCreationDate());
         movieEntity.setCategoryId(movieDTO.getCategoryId());
+
         if (loadCharacters) {
 
             List<CharacterDTO> characterDTOList = movieDTO.getCast();
             List<CharacterEntity> characterEntities = characterMapper.characterDTO2EntityList(characterDTOList, false);
             movieEntity.setCast(characterEntities);
+
+
 
         }
         return movieEntity;
@@ -46,12 +50,14 @@ public class MovieMapper {
         movieDTO.setImage(movieEntity.getImage());
         movieDTO.setTitle(movieEntity.getTitle());
         movieDTO.setCreationDate(movieEntity.getCreationDate());
+        movieDTO.setRaiting(movieEntity.getRating());
         movieDTO.setCategoryId(movieEntity.getCategoryId());
         if (loadCharacters) {
 
             List<CharacterEntity> characterEntities = movieEntity.getCast();
             List<CharacterDTO> characterDTOList = characterMapper.characterEntity2DTOList(characterEntities, false);
             movieDTO.setCast(characterDTOList);
+
 
         }
         return movieDTO;
@@ -131,6 +137,16 @@ public class MovieMapper {
         }
 
         return movieBasicDTOS;
+
+    }
+
+    public void updateAttributes(MovieDTO dto, MovieEntity entity){
+
+        entity.setImage(dto.getImage());
+        entity.setTitle(dto.getTitle());
+        entity.setRating(dto.getRaiting());
+        entity.setCreationDate(dto.getCreationDate());
+        entity.setCategoryId(dto.getCategoryId());
 
     }
 

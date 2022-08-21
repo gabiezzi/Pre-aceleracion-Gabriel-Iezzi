@@ -39,7 +39,7 @@ public class CharacterEntity implements Serializable {
 
     private Boolean deleted = Boolean.FALSE;
 
-    @ManyToMany(mappedBy = "cast", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "cast", cascade = CascadeType.REFRESH)
     private List<MovieEntity> movies = new ArrayList<>() ;;
 
     public void addMovie(MovieEntity movie){this.movies.add(movie);}

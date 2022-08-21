@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -39,7 +38,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String jws = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Beater ")) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
             jws = authorizationHeader.substring(7);
             username = jwtUtils.extractUsername(jws);

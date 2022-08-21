@@ -16,6 +16,10 @@ public class CategoryController {
     @Autowired
     private CategoryServiceImpl categoryService;
 
+    // ##CRUD : The basic operation of create, read, update and delete(soft delete)
+
+
+    // Brings the list of categories loaded in the database
     @GetMapping("/list")
     public ResponseEntity<List<CategoryDTO>> listCategories() throws Exception {
 
@@ -24,8 +28,6 @@ public class CategoryController {
         return ResponseEntity.ok().body(categoryDTOS);
 
     }
-
-
 
     @PostMapping
     public ResponseEntity<CategoryDTO> save(@RequestBody CategoryDTO categoryDTO) throws Exception {

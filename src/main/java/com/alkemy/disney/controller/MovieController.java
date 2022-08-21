@@ -23,6 +23,12 @@ public class MovieController {
     @Autowired
     private CharacterServiceImpl characterService;
 
+
+    // ##CRUD : The basic operation of create, read, update and delete(soft delete)
+
+
+    // Brings the list of movies loaded in the database
+
     @GetMapping("/list")
     public ResponseEntity<List<MovieBasicDTO>> listMovies() throws Exception {
 
@@ -32,13 +38,15 @@ public class MovieController {
 
     }
 
+    //Search by title and filter by genre.
+    //Sort the results by creation date in ascending or descending order.
     @GetMapping
     public ResponseEntity<List<MovieDTO>> getMoviesByFilters(
-            @RequestParam(required=false) String title,
-            @RequestParam(required=false) String date,
-            @RequestParam(required=false) List<Long> category,
-            @RequestParam(required=false , defaultValue = "ASC") String order
-    ){
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String date,
+            @RequestParam(required = false) List<Long> category,
+            @RequestParam(required = false, defaultValue = "ASC") String order
+    ) {
         List<MovieDTO> movieDTOS = this.movieService.getMoviesByFilters(title, date, category, order);
 
         return ResponseEntity.ok(movieDTOS);
@@ -75,6 +83,25 @@ public class MovieController {
         movieService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    //Add or remove a character from the movie log
+    @PostMapping("/{idMovie}/character/add/{idCharacter}")
+    public ResponseEntity<MovieDTO> addCharacter2Movie(@PathVariable Long idMovie, @PathVariable Long idCharacter) throws Exception {
+
+        MovieDTO movieDTO = movieService.addCharacter2Movie(idMovie, idCharacter);
+        return ResponseEntity.status(HttpStatus.CREATED).body(movieDTO);
+
+    }
+
+    @PostMapping("/{idMovie}/character/remove/{idCharacter}")
+    public ResponseEntity<MovieDTO> removeCharacter2Movie(@PathVariable Long idMovie, @PathVariable Long idCharacter) throws Exception {
+
+        MovieDTO movieDTO = movieService.removeCharacter2Movie(idMovie, idCharacter);
+        return ResponseEntity.ok().body(movieDTO);
+
+    }
+
+
 
 
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 
 @Service
@@ -24,10 +25,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${alkemy.disney.email.enable}")
     private boolean enable;
 
-
     @Override
     public void sendWelcomeEmailTo(String to) {
-        if (!enable){
+        if (!enable) {
             return;
         }
 
@@ -40,20 +40,23 @@ public class EmailServiceImpl implements EmailService {
                 "Thank you for your registration. You have successfully registered for our event:'DisneyApi'!"
         );
 
-        String subject = "ALkemy Java Challenge!";
+        String subject = "Bienvenido a Alkemy Api Disney!";
 
-        Mail mail = new Mail(fromEmail,subject,toEmail,content);
-
+        Mail mail = new Mail(fromEmail, subject, toEmail, content);
         SendGrid sg = new SendGrid(apiKey);
-
         Request request = new Request();
-        try{
+
+        try {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
 
-        } catch (IOException e){
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+
+        } catch (IOException e) {
             e.getMessage();
         }
 

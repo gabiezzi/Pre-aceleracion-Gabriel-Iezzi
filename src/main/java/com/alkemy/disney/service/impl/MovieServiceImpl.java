@@ -57,30 +57,6 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
 
     }
 
-    @Override
-    public MovieDTO addCharacter2Movie(Long idCharacter, Long idMovie) throws Exception {
-
-
-        MovieEntity movieEntity = findMovieById(idMovie);
-
-        movieEntity.addCharacter(characterService.findCharacterById(idCharacter));
-
-        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity), true);
-
-
-    }
-
-    @Override
-    public MovieDTO removeCharacter2Movie(Long idCharacter, Long idMovie) throws Exception {
-
-        MovieEntity movieEntity = findMovieById(idMovie);
-
-        movieEntity.removeCharacter(characterService.findCharacterById(idCharacter));
-
-        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity), true);
-
-    }
-
 
     @Transactional
     public MovieDTO findById(Long id) throws Exception {
@@ -107,10 +83,10 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
     @Override
     public List<MovieDTO> getMoviesByFilters
             (
-             String title,
-             String date,
-             List<Long> category,
-             String order) {
+                    String title,
+                    String date,
+                    List<Long> category,
+                    String order) {
 
         MoviesFiltersDTO movieFiltersDTO = new MoviesFiltersDTO(title, date, category, order);
 
@@ -146,21 +122,14 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
     @Transactional
     public MovieDTO update(MovieDTO dto, Long idMovie) throws Exception {
 
-        Optional<MovieEntity> entityOptional = movieRepository.findById(idMovie);
+        MovieEntity movieEntity = findMovieById(idMovie);
 
-        if (entityOptional.isPresent()) {
+        movieMapper.updateAttributes(dto, movieEntity);
 
-            MovieEntity movieEntity = movieMapper.movieDTO2Entity(dto, false);
+        MovieEntity movieSaved = movieRepository.save(movieEntity);
 
-            MovieEntity movieSaved = movieRepository.save(movieEntity);
+        return movieMapper.movieEntity2DTO(movieSaved, false);
 
-            return movieMapper.movieEntity2DTO(movieSaved, false);
-
-        } else {
-
-            throw new Exception("Movie not found");
-
-        }
 
     }
 
@@ -171,4 +140,32 @@ public class MovieServiceImpl implements MovieService, BaseService<MovieDTO> {
         movieRepository.deleteById(id);
 
     }
+
+
+
+    @Override
+    public MovieDTO addCharacter2Movie(Long idMovie, Long idCharacter) throws Exception {
+
+
+        MovieEntity movieEntity = findMovieById(idMovie);
+
+        movieEntity.addCharacter(characterService.findCharacterById(idCharacter));
+
+        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity), true);
+
+
+    }
+
+    @Override
+    public MovieDTO removeCharacter2Movie(Long idMovie, Long idCharacter) throws Exception {
+
+        MovieEntity movieEntity = findMovieById(idMovie);
+
+        movieEntity.removeCharacter(characterService.findCharacterById(idCharacter));
+
+        return movieMapper.movieEntity2DTO(movieRepository.save(movieEntity), true);
+
+    }
+
+
 }

@@ -17,6 +17,8 @@ public class MovieDTO {
 
     private String title;
 
+    private Double raiting;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate creationDate;
 

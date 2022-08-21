@@ -29,8 +29,6 @@ public class CharacterController {
         return ResponseEntity.ok().body(characterDTO);
     }
 
-
-
     @GetMapping
     public ResponseEntity<List<CharacterDTO>> getCharactersByFilter(
             @RequestParam(required = false) String name,
